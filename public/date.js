@@ -1,27 +1,3 @@
-export const TIME_ZONES = [
-  'America/Lima', 'America/Bogota', 'America/Mexico_City', 'America/Argentina/Buenos_Aires',
-  'America/Santiago', 'America/Caracas', 'America/La_Paz', 'America/Guayaquil',
-  'America/Montevideo', 'America/Asuncion', 'America/Santo_Domingo', 'America/Panama',
-  'America/Guatemala', 'America/Costa_Rica', 'America/El_Salvador', 'America/Tegucigalpa',
-  'America/Managua', 'America/New_York', 'America/Los_Angeles', 'Europe/Madrid', 'UTC',
-];
-
-/** Start with a date in the future; it becomes fixed on the first server run. */
-export function defaultConfig() {
-  const next = new Date(Date.now() + 5 * 86400000);
-  return {
-    recipient: 'Para el amor de mi vida',
-    title: 'Tu día está por llegar. ♥',
-    message: 'Falta muy poco para tu cumpleaños, y no puedo esperar para celebrarlo contigo.\n\nPara llenarte de abrazos, de besos y de pequeñas sorpresas.\n\nGracias por existir y hacer mis días más bonitos.',
-    signature: 'Con todo mi cariño.',
-    countdownLabel: 'Esperando tu cumple…',
-    birthdayMessage: '¡Feliz cumpleaños! Hoy el mundo es un poquito más bonito gracias a ti. ♥',
-    date: next.toISOString().slice(0, 10),
-    time: '00:00',
-    timezone: 'America/Lima',
-  };
-}
-
 function partsAt(timestamp, timezone) {
   const parts = new Intl.DateTimeFormat('en-CA', {
     timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit',
@@ -43,9 +19,9 @@ export function targetTimestamp(config) {
   return guess;
 }
 
-/** Accept only the editable, bounded text/date fields. Content is rendered as text. */
+/** Valida el archivo de configuración antes del despliegue y en el navegador. */
 export function validateConfig(input) {
-  if (!input || typeof input !== 'object' || Array.isArray(input)) throw new Error('Completa el formulario.');
+  if (!input || typeof input !== 'object' || Array.isArray(input)) throw new Error('Completa los campos de configuración.');
   const limits = { recipient: 100, title: 120, message: 1600, signature: 120, countdownLabel: 100, birthdayMessage: 300 };
   const config = {};
   for (const [key, max] of Object.entries(limits)) {
@@ -61,7 +37,9 @@ export function validateConfig(input) {
     throw new Error('Elige una fecha real entre 1900 y 2200.');
   }
   if (typeof input.time !== 'string' || !/^([01]\d|2[0-3]):[0-5]\d$/.test(input.time)) throw new Error('Elige una hora válida.');
-  if (!TIME_ZONES.includes(input.timezone)) throw new Error('Elige una zona horaria de la lista.');
+  if (typeof input.timezone !== 'string' || !input.timezone.trim()) throw new Error('Escribe una zona horaria IANA válida.');
+  try { new Intl.DateTimeFormat('es', { timeZone: input.timezone }); }
+  catch { throw new Error('La zona horaria no es válida. Ejemplo: America/Lima.'); }
   Object.assign(config, { date: input.date, time: input.time, timezone: input.timezone });
   targetTimestamp(config);
   return config;

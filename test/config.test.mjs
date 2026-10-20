@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { defaultConfig, validateConfig, targetTimestamp } from '../lib/config.mjs';
+import { dedication } from '../public/config.js';
+import { validateConfig, targetTimestamp } from '../public/date.js';
+const defaultConfig = () => ({ ...dedication });
 
 test('Lima resolves to UTC-5 independently of the visitor timezone', () => {
   const c = validateConfig({ ...defaultConfig(), date: '2026-12-25', time: '00:00', timezone: 'America/Lima' });

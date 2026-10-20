@@ -1,4 +1,6 @@
 import { HeartTree } from './tree.js';
+import { dedication } from './config.js';
+import { validateConfig, targetTimestamp } from './date.js';
 
 const $ = id => document.getElementById(id);
 const tree = new HeartTree($('tree'));
@@ -72,28 +74,21 @@ async function start() {
   if (token === run) $('replay').hidden = false;
 }
 
-async function loadConfig() {
-  const response = await fetch('/api/config', { cache: 'no-store' });
-  if (!response.ok) throw new Error('No se pudo cargar la dedicatoria. Recarga la página para intentarlo de nuevo.');
-  const next = await response.json();
-  if (!Number.isFinite(next.targetTimestamp)) throw new Error('No se pudo leer la fecha de la dedicatoria.');
-  const changed = config && JSON.stringify(next) !== JSON.stringify(config);
-  config = next;
+function loadConfig() {
+  config = validateConfig(dedication);
+  config.targetTimestamp = targetTimestamp(config);
   document.title = `${config.recipient || 'Una fecha especial'} ♥`;
   $('target-date').textContent = new Intl.DateTimeFormat('es', { timeZone: config.timezone, day: 'numeric', month: 'long', year: 'numeric' }).format(config.targetTimestamp);
   updateCountdown();
-  if (changed && $('seed').hidden) start();
 }
 
 $('seed').addEventListener('click', start);
 $('replay').addEventListener('click', start);
 
 try {
-  await loadConfig();
+  loadConfig();
   timer = setInterval(updateCountdown, 1000);
-  // Changes saved in /edit reach other open devices without a manual reload.
-  setInterval(() => { if (!document.hidden) loadConfig().catch(() => {}); }, 30000);
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) loadConfig().catch(() => {}); });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) updateCountdown(); });
 } catch (error) {
   $('seed').hidden = true;
   $('load-error').hidden = false;
