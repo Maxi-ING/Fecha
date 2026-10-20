@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6eadc">
+  <meta name="description" content="Un árbol de pequeños corazones para una fecha muy especial.">
+  <title>Una fecha especial ♥</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body class="dedication-page">
+  <main class="scene" aria-label="Una dedicatoria para ti">
+    <div class="paper-grain" aria-hidden="true"></div>
+    <div class="tree-wrap" aria-hidden="true"><canvas id="tree"></canvas></div>
+    <button class="seed-button" id="seed" aria-label="Abrir la dedicatoria">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 28C12 24 2 18 2 10a8 8 0 0 1 14-5 8 8 0 0 1 14 5c0 8-10 14-14 18Z"/></svg>
+      <span>Un pequeño corazón para ti</span>
+    </button>
+    <article class="letter" id="letter" aria-label="Mensaje de la dedicatoria">
+      <p class="recipient" id="recipient"></p>
+      <h1 id="title"></h1>
+      <p class="message" id="message"></p>
+      <p class="signature" id="signature"></p>
+    </article>
+    <div class="ground" aria-hidden="true"></div>
+    <section class="countdown" id="countdown" aria-label="Cuenta regresiva">
+      <p id="countdown-label"></p>
+      <p class="time-left" id="time-left" role="timer"></p>
+      <p class="birthday-message" id="birthday-message" hidden></p>
+      <p class="target-date" id="target-date"></p>
+    </section>
+    <button class="replay" id="replay" aria-label="Repetir animación" title="Repetir animación" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 10a8 8 0 1 1 0 5M4 4v6h6"/></svg>
+    </button>
+    <p class="load-error" id="load-error" role="alert" hidden></p>
+  </main>
+  <noscript><p class="noscript">Activa JavaScript para abrir la dedicatoria y su árbol de corazones.</p></noscript>
+</body>
+</html>
